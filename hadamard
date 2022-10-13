@@ -1,0 +1,74 @@
+Hadamard
+Experiment-4
+
+***Aim:***
+To determine the Hadamard transform of the given image and use it for image compression
+
+from scipy.linalg import hadamard
+from skimage.color import rgb2gray
+from skimage import io
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+def hada (f,N):
+  H = hadamard(N) #N is the size of the matrix to be generated
+  temph = np.dot(np.dot(H,f),H) # we do not take transpose of H since, the matrix is symmetrical 
+  temph[1:N,1:N]=0 #convert values of the 3rd row and 8th col to zero i.e. compression,we make the image hazy
+  return temph #formula for hadamard = H*f*H'
+
+def inv_hada (F,N):
+  H = hadamard(N)
+  tempih = np.dot(np.dot(H,F),H) # formula for inverse = (H'*F*H)/N^2
+  tempih = tempih/(N*N)
+  return tempih
+
+img = io.imread('face.png')
+
+img_gray = rgb2gray(img)
+img_gray = 255*img_gray
+
+plt.imshow(img_gray,cmap="gray")
+
+[rows,cols] = img_gray.shape
+[rows,cols]
+
+#to determine hadamard transform of the image
+img_hada = np.zeros((rows,cols),dtype = int) #we create a matrix of the same size as our image but we keep all elements as zero
+
+N = 8
+for r in range(rows//N): #gives us rows in multiples of 8 (// gives us an integer value)
+  for c in range(cols//N): #gives us cols in multiples of 8
+    temp = img_gray[r*N:(r+1)*N, c*N:(c+1)*N] # formula to obtain the nth row and column; gives us the image in blocks of 8 in sequence 
+    temp_hada = hada(temp,N)
+    img_hada[r*N:(r+1)*N, c*N:(c+1)*N]= temp_hada #hadamard transform is obtained 
+
+plt.imshow(img_hada,cmap="gray")
+
+#inverse of Hadamard transform
+img_ihada = np.zeros((rows,cols),dtype = int)
+
+for r in range(rows//N): #gives us rows in multiples of 8 (// gives us an integer value)
+  for c in range(cols//N): #gives us cols in multiples of 8
+    temp = img_hada[r*N:(r+1)*N, c*N:(c+1)*N] # formula to obtain the nth row and column; gives us the image in blocks of 8 in sequence 
+    temp_ihada = inv_hada(temp,N)
+    img_ihada[r*N:(r+1)*N, c*N:(c+1)*N]= temp_ihada #inverse hadamard transform is obtained 
+
+plt.imshow(img_ihada,cmap="gray")
+
+plt.figure(figsize=(9,9))
+plt.subplot(1,3,1)
+plt.imshow(img_gray,cmap='gray')
+plt.title("Original Image")
+plt.subplot(1,3,2)
+plt.imshow(img_hada,cmap='gray')
+plt.title("Transformed Image")
+plt.subplot(1,3,3)
+plt.imshow(img_ihada,cmap="gray")
+plt.title("Inverse of Hadamard")
+
+**Conclusion:**
+
+* Hadamard transform matrix is used to transform the given image. If Hadamard co-efficients are not changed, then inverse hadamard shows the original image.
+* For 8x8 transformed matrix, last four rows and cols are converted to zero. the inverse transformed image shows no significant difference.
+* If the last 6 rows and 6 columns are converted to zero, then the recovered image is hazy 
