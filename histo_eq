@@ -1,0 +1,299 @@
+
+from skimage import io 
+import matplotlib.pyplot as plt
+import numpy as np
+from skimage.color import rgb2gray
+
+**for** **pollen_very_dark.tif** 
+
+from matplotlib import image
+image=io.imread('pollen_very_dark.tif')
+#image=io.imread('pollen.tif')
+#image=io.imread('Unequalized_image.jpg')
+#image=io.imread('pollen_bright.tif')
+#image_gray=rgb2gray(image) change image everywhere else to image_gray
+[rows,cols]= image.shape
+print([rows,cols])
+
+[n,r]=np.histogram(image.flatten(),256) #flatten 2D image with eg: 10x10(rowsxcols) into 1 row and 100 columns [matrix explanation]
+# n, c and r are the same as the ones in the table done in class
+c = n.cumsum()
+#cumulative sum of pixels with given intensity
+
+numb_pix=rows*cols
+p = c*255/numb_pix
+s=p.astype(int) 
+#s is the rounded off value of the pixel intensities
+#"astype" converts p from float type to integer
+
+image_eq1=image.copy() #make a copy of the image and label it as image equalized
+image_eq1.shape
+
+for r in range(rows):
+  for c in range(cols):
+    temp1=image[r][c] #og intensity of the pixel at row 'r' and col 'c'
+    temp_int=temp1.astype(int)
+    temp2=s[temp_int] #new intensity value of the corresponding pixel 
+    image_eq1[r][c]=temp2 # equalized image with the new pixel intensity values
+
+plt.figure(figsize=(9,9))
+plt.subplot(2,2,1)
+plt.imshow(image,cmap='gray')
+plt.title('Original Image')
+plt.subplot(2,2,2)
+plt.hist(image.ravel(),bins=256)
+plt.title('Histogram of Original Image')
+plt.subplot(2,2,3)
+plt.imshow(image_eq1,cmap='gray')
+plt.title('Equalized Image')
+plt.subplot(2,2,4)
+plt.hist(image_eq1.ravel(),bins=256)
+plt.title('Histogram of Equalized Image')
+
+**for pollen.tif**
+
+from matplotlib import image
+#image=io.imread('pollen_very_dark.tif')
+image=io.imread('pollen.tif')
+#image=io.imread('Unequalized_image.jpg')
+#image=io.imread('pollen_bright.tif')
+#image_gray=rgb2gray(image) change image everywhere else to image_gray
+[rows,cols]= image.shape
+print([rows,cols])
+
+[n,r]=np.histogram(image.flatten(),256) #flatten 2D image with eg: 10x10(rowsxcols) into 1 row and 100 columns [matrix explanation]
+# n, c and r are the same as the ones in the table done in class
+c = n.cumsum()
+#cumulative sum of pixels with given intensity
+
+numb_pix=rows*cols
+p = c*255/numb_pix
+s=p.astype(int) 
+#s is the rounded off value of the pixel intensities
+#"astype" converts p from float type to integer
+
+image_eq1=image.copy() #make a copy of the image and label it as image equalized
+image_eq1.shape
+
+for r in range(rows):
+  for c in range(cols):
+    temp1=image[r][c] #og intensity of the pixel at row 'r' and col 'c'
+    temp_int=temp1.astype(int)
+    temp2=s[temp_int] #new intensity value of the corresponding pixel 
+    image_eq1[r][c]=temp2 # equalized image with the new pixel intensity values
+
+plt.figure(figsize=(9,9))
+plt.subplot(2,2,1)
+plt.imshow(image,cmap='gray')
+plt.title('Original Image')
+plt.subplot(2,2,2)
+plt.hist(image.ravel(),bins=256)
+plt.title('Histogram of Original Image')
+plt.subplot(2,2,3)
+plt.imshow(image_eq1,cmap='gray')
+plt.title('Equalized Image')
+plt.subplot(2,2,4)
+plt.hist(image_eq1.ravel(),bins=256)
+plt.title('Histogram of Equalized Image')
+
+**for Unequalized_image.tif**
+
+from matplotlib import image
+#image=io.imread('pollen_very_dark.tif')
+#image=io.imread('pollen.tif')
+image=io.imread('Unequalized_image.jpg')
+#image=io.imread('pollen_bright.tif')
+image_gray=rgb2gray(image) #change image everywhere else to image_gray
+image_gray=255*image_gray
+[rows,cols]= image_gray.shape
+print([rows,cols])
+
+[n,r]=np.histogram(image_gray.flatten(),256) #flatten 2D image with eg: 10x10(rowsxcols) into 1 row and 100 columns [matrix explanation]
+# n, c and r are the same as the ones in the table done in class
+c = n.cumsum()
+#cumulative sum of pixels with given intensity
+
+numb_pix=rows*cols
+p = c*255/numb_pix
+s=p.astype(int) 
+#s is the rounded off value of the pixel intensities
+#"astype" converts p from float type to integer
+
+image_eq1=image_gray.copy() #make a copy of the image and label it as image equalized
+image_eq1.shape 
+
+temp1
+
+for r in range(rows):
+  for c in range(cols):
+    temp1=image_gray[r][c] #og intensity of the pixel at row 'r' and col 'c'
+    temp_int=temp1.astype(int)
+    temp2=s[temp_int] #new intensity value of the corresponding pixel 
+    image_eq1[r][c]=temp2 # equalized image with the new pixel intensity values
+
+plt.figure(figsize=(9,9))
+plt.subplot(2,2,1)
+plt.imshow(image_gray,cmap='gray')
+plt.title('Original Image')
+plt.subplot(2,2,2)
+plt.hist(image_gray.ravel(),bins=256)
+plt.title('Histogram of Original Image')
+plt.subplot(2,2,3)
+plt.imshow(image_eq1,cmap='gray')
+plt.title('Equalized Image')
+plt.subplot(2,2,4)
+plt.hist(image_eq1.ravel(),bins=256)
+plt.title('Histogram of Equalized Image')
+
+**for pollen_bright.tif**
+
+from matplotlib import image
+#image=io.imread('pollen_very_dark.tif')
+#image=io.imread('pollen.tif')
+#image=io.imread('Unequalized_image.jpg')
+image=io.imread('pollen_bright.tif')
+#image_gray=rgb2gray(image) change image everywhere else to image_gray
+[rows,cols]= image.shape
+print([rows,cols])
+
+[n,r]=np.histogram(image.flatten(),256) #flatten 2D image with eg: 10x10(rowsxcols) into 1 row and 100 columns [matrix explanation]
+# n, c and r are the same as the ones in the table done in class
+c = n.cumsum()
+#cumulative sum of pixels with given intensity
+
+numb_pix=rows*cols
+p = c*255/numb_pix
+s=p.astype(int) 
+
+image_eq1=image.copy() #make a copy of the image and label it as image equalized
+image_eq1.shape
+
+for r in range(rows):
+  for c in range(cols):
+    temp1=image[r][c] #og intensity of the pixel at row 'r' and col 'c'
+    temp_int=temp1.astype(int)
+    temp2=s[temp_int] #new intensity value of the corresponding pixel 
+    image_eq1[r][c]=temp2 # equalized image with the new pixel intensity values
+
+plt.figure(figsize=(9,9))
+plt.subplot(2,2,1)
+plt.imshow(image,cmap='gray')
+plt.title('Original Image')
+plt.subplot(2,2,2)
+plt.hist(image.ravel(),bins=256)
+plt.title('Histogram of Original Image')
+plt.subplot(2,2,3)
+plt.imshow(image_eq1,cmap='gray')
+plt.title('Equalized Image')
+plt.subplot(2,2,4)
+plt.hist(image_eq1.ravel(),bins=256)
+plt.title('Histogram of Equalized Image')
+
+**for pollen_good_contrast.tif**
+
+from matplotlib import image
+#image=io.imread('pollen_very_dark.tif')
+#image=io.imread('pollen.tif')
+#image=io.imread('Unequalized_image.jpg')
+#image=io.imread('pollen_bright.tif')
+#image_gray=rgb2gray(image) change image everywhere else to image_gray
+image=io.imread('pollen_good_contrast.tif')
+[rows,cols]= image.shape
+print([rows,cols])
+
+[n,r]=np.histogram(image.flatten(),256) #flatten 2D image with eg: 10x10(rowsxcols) into 1 row and 100 columns [matrix explanation]
+# n, c and r are the same as the ones in the table done in class
+c = n.cumsum()
+#cumulative sum of pixels with given intensity
+
+numb_pix=rows*cols
+p = c*255/numb_pix
+s=p.astype(int) 
+
+image_eq1=image.copy() #make a copy of the image and label it as image equalized
+image_eq1.shape
+
+for r in range(rows):
+  for c in range(cols):
+    temp1=image[r][c] #og intensity of the pixel at row 'r' and col 'c'
+    temp_int=temp1.astype(int)
+    temp2=s[temp_int] #new intensity value of the corresponding pixel 
+    image_eq1[r][c]=temp2 # equalized image with the new pixel intensity values
+
+plt.figure(figsize=(9,9))
+plt.subplot(2,2,1)
+plt.imshow(image,cmap='gray')
+plt.title('Original Image')
+plt.subplot(2,2,2)
+plt.hist(image.ravel(),bins=256)
+plt.title('Histogram of Original Image')
+plt.subplot(2,2,3)
+plt.imshow(image_eq1,cmap='gray')
+plt.title('Equalized Image')
+plt.subplot(2,2,4)
+plt.hist(image_eq1.ravel(),bins=256)
+plt.title('Histogram of Equalized Image')
+
+**for pollen_dark.tif**
+
+from matplotlib import image
+#image=io.imread('pollen_very_dark.tif')
+#image=io.imread('pollen.tif')
+#image=io.imread('Unequalized_image.jpg')
+#image=io.imread('pollen_bright.tif')
+#image_gray=rgb2gray(image) change image everywhere else to image_gray
+#image=io.imread('pollen_good_contrast.tif')
+image = io.imread('pollen_dark.tif')
+[rows,cols]= image.shape
+print([rows,cols])
+
+[n,r]=np.histogram(image.flatten(),256) #flatten 2D image with eg: 10x10(rowsxcols) into 1 row and 100 columns [matrix explanation]
+# n, c and r are the same as the ones in the table done in class
+c = n.cumsum()
+#cumulative sum of pixels with given intensity
+
+numb_pix=rows*cols
+p = c*255/numb_pix
+s=p.astype(int) 
+
+image_eq1=image.copy() #make a copy of the image and label it as image equalized
+image_eq1.shape
+
+for r in range(rows):
+  for c in range(cols):
+    temp1=image[r][c] #og intensity of the pixel at row 'r' and col 'c'
+    temp_int=temp1.astype(int)
+    temp2=s[temp_int] #new intensity value of the corresponding pixel 
+    image_eq1[r][c]=temp2 # equalized image with the new pixel intensity values
+
+plt.figure(figsize=(9,9))
+plt.subplot(2,2,1)
+plt.imshow(image,cmap='gray')
+plt.title('Original Image')
+plt.subplot(2,2,2)
+plt.hist(image.ravel(),bins=256)
+plt.title('Histogram of Original Image')
+plt.subplot(2,2,3)
+plt.imshow(image_eq1,cmap='gray')
+plt.title('Equalized Image')
+plt.subplot(2,2,4)
+plt.hist(image_eq1.ravel(),bins=256)
+plt.title('Histogram of Equalized Image')
+
+**Conclusion:**
+Histogram equalization is applied on the given image(pollen.tif), which already has a good contrast. After histogram equalization, there is no significant change in the image, this is because histogram equalization does not work efficiently on images with good contrast. 
+
+
+
+**Conclusion:**
+
+Histogram equalization on very dark image(pollen_dark.tif):
+After Histogram equalization, the contrast of the image improves which can be seen in the histogram of the equalized image.
+
+**Conclusion:**
+
+Same process is applied to bright image(pollen_bright.tif). After equalization, the contrast of the given image has improved.
+
+**Conclusion:**
+
+For the given image (Unequalized.tif), there is a significant improvement in the contrast of this image after applying histogram equalization. 
