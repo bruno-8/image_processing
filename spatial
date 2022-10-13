@@ -1,0 +1,103 @@
+Spatial Filtering
+Experiment-3
+
+***Aim:***
+To apply spatial filters for image enhancement 
+
+from scipy import signal
+from skimage import io
+import matplotlib.pyplot as plt
+import numpy as np
+from skimage.color import rgb2gray
+
+#we are adding noise to the given image and then we apply a spatial filter to check its effect on the noise
+image = io.imread('fruits.png')
+
+
+sh=image.shape
+sh    
+
+image_noisy = image.copy()
+#mn,std= 0,20
+mn,std = 0,10
+gnoise = np.random.normal(mn,std,(sh[0],sh[1])) 
+#we generate gaussian noise for the given no. of rows,cols
+
+image_noisy[:,:,0] = image[:,:,0] + gnoise
+image_noisy[:,:,1] = image[:,:,1] + gnoise
+image_noisy[:,:,2] = image[:,:,2] + gnoise
+
+#avg_sz = 3 #we assume size of filter as 3/9
+avg_sz = 9
+avg_filter=(np.ones((avg_sz,avg_sz)))*(1/(avg_sz*avg_sz))
+# we create the averaging filter
+
+avg_filter
+
+image_avg_filt = image.copy() # variable for the filtered image 
+image_avg_filt[:,:,0]= signal.convolve2d(image_noisy[:,:,0],avg_filter,mode='same') # we convolve all rows and cols of the image with the filter we have just generated
+image_avg_filt[:,:,1]= signal.convolve2d(image_noisy[:,:,1],avg_filter,mode='same') # mode ='same' adds extra rows and cols which make the arrays of equal size after convolution
+image_avg_filt[:,:,2]= signal.convolve2d(image_noisy[:,:,2],avg_filter,mode='same')
+
+plt.figure(figsize=(10,10))
+plt.subplot(1,3,1)
+plt.imshow(image)
+plt.title("Original Image")
+plt.subplot(1,3,2)
+plt.imshow(image_noisy)
+plt.title("Noisy Image")
+plt.subplot(1,3,3)
+plt.imshow(image_avg_filt)
+plt.title("Image after applying averaging filter")
+
+from random import seed,randint 
+
+image = io.imread('face.png')
+image_gray= rgb2gray(image)
+
+sh = image_gray.shape
+sh
+
+#generate salt and pepper noise
+image_sp=image_gray.copy()
+p=0.5 #we change 50% of pixels 
+numb_sppixels= int(p*sh[0]*sh[1])
+seed(1) 
+
+sp=1 #s&p noise is 1
+for j in range(numb_sppixels):
+  temp1=randint(0, sh[0]-1)
+  temp2=randint(0, sh[1]-1)
+  image_sp[temp1][temp2] = sp
+  if sp ==1:
+    sp=0
+  else:
+    sp=1
+
+image_sp_filt = image_sp.copy()
+
+#sz = 3
+sz=5
+cent_mask=int((sz-1)/2) #gives location of the central pixel
+med = int(((sz*sz)-1)/2) # we get the median value
+for r in range (0,sh[0]-sz):
+  for c in range (0, sh[1]-sz):
+    temp1 = image_sp[r:r+sz,c:c+sz]
+    temp2 = np.reshape(temp1,(1,sz*sz))
+    temp3 = np.sort(temp2)
+    image_sp_filt[r+cent_mask,c+cent_mask]=temp3[0][med]
+
+plt.figure(figsize=(9,9))
+plt.subplot(1,3,1)
+plt.imshow(image,cmap='gray')
+plt.title("Original Image")
+plt.subplot(1,3,2)
+plt.imshow(image_sp,cmap='gray')
+plt.title("SP Noise Image")
+plt.subplot(1,3,3)
+plt.imshow(image_sp_filt,cmap='gray')
+plt.title("Image after applying salt & pepper filter")
+
+**Conclusion:**
+1. When standard deviation of gaussian noise is increased from 10 to 20, the image is more noisy and therefore, the average filter of size 3x3 is not effective.
+2.  50% of the image is corrupted with salt and pepper noise. After applying median filter of size 3x3, we get original image without noise. If the size of the filter is increased from 3 to 5, image does not show the effect of removing the noise. 
