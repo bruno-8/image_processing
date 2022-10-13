@@ -1,0 +1,146 @@
+import numpy as np 
+from skimage import io
+from scipy import signal 
+from skimage.color import rgb2gray
+import matplotlib.pyplot as plt
+
+image = np.array([[1,5,0,3,9],[5,7,5,2,6],[0,6,0,5,0],[1,5,1,3,8]])
+
+max = np.max(np.max(image)) #gives maximum of each column in the matrix and then gives the maximum value of the 2-D image
+plt.imshow(image,cmap='gray') #In python, white is the maximum value and black is the minimum value 
+
+def diff(p,q):            #defining the difference between the two pixels p and q
+  temp = np.abs(p-q)      #returns the absolute difference b/w p and q
+  return temp
+
+def grow(im,im_g,t,s): # s: seed which user will input, t : threshold, im: original image, im_g: user constructed image/new image
+  s_rw=s[0]
+  s_cl=s[1]
+  im_g[s_rw,s_cl]= 1 # generation of the seed point in the new image
+  [rows,cols]= im.shape # shape of the given image and new image will be the same 
+  px = im[s_rw, s_cl]
+  # we check whether or not we're at the edge of the matrix and if we have a value in the next col in both matrices. we check if the diff b/w the pixel values is less than the threshold defined by the user
+  if(s_cl+1<cols and im_g[s_rw,s_cl + 1]==0 and diff(px,im[s_rw,s_cl + 1])<= t):
+    grow(im, im_g,t,[s_rw,s_cl +1])     
+  if(s_cl -1 >= 0 and im_g[s_rw,s_cl - 1]==0 and diff(px,im[s_rw,s_cl - 1])<= t):
+    grow(im, im_g,t,[s_rw,s_cl - 1])
+  if(s_rw + 1 < rows and im_g[s_rw+1,s_cl]==0 and diff(px,im[s_rw +1,s_cl])<= t):
+    grow(im, im_g,t,[s_rw+1,s_cl])
+  if(s_rw -1>= 0 and im_g[s_rw -1, s_cl]==0 and diff(px,im[s_rw -1,s_cl])<= t):
+    grow(im, im_g,t,[s_rw - 1, s_cl])
+
+im_object = np.zeros(image.shape)
+t = 2
+s = [1,1]
+grow(image,im_object,t,s)
+
+plt.figure(figsize=(9,9))
+plt.subplot(1,3,1)
+plt.imshow(image,cmap='gray')
+plt.title("Original Image")
+plt.subplot(1,3,2)
+plt.imshow(im_object,cmap='gray')
+plt.title("Object on representative image")
+
+im_object
+
+im_object = np.zeros(image.shape)
+t = 2
+s = [3,0]
+grow(image,im_object,t,s)
+
+plt.figure(figsize=(9,9))
+plt.subplot(1,3,1)
+plt.imshow(image,cmap='gray')
+plt.title("Original Image")
+plt.subplot(1,3,2)
+plt.imshow(im_object,cmap='gray')
+plt.title("Object on representative image")
+
+[rows,cols] = image.shape
+
+im_det = image.copy()
+for r in range(rows):
+  for c in range(cols):
+    if im_object[r,c] == 1:
+      im_det[r,c] = max 
+
+plt.figure(figsize=(9,9))
+plt.subplot(1,3,1)
+plt.imshow(image,cmap='gray')
+plt.title("Original Image")
+plt.subplot(1,3,2)
+plt.imshow(im_object,cmap='gray')
+plt.title("Object on representative image")
+plt.subplot(1,3,3)
+plt.imshow(im_det,cmap='gray')
+plt.title("Image with object")
+
+image = io.imread('lenna_grey.jpg')
+
+image = rgb2gray(image)
+image = image[0:50,0:50]
+image = 255*image 
+
+[rows,cols] = image.shape
+image.shape
+
+def diff(p,q):            #defining the difference between the two pixels p and q
+  temp = np.abs(p-q)      #returns the absolute difference b/w p and q
+  return temp
+
+def grow(im, im_g,t,s): # s: seed which user will input, t : threshold, im: original image, im_g: user constructed image/new image
+  s_rw=s[0]
+  s_cl=s[1]
+  im_g[s_rw,s_cl]= 1 # generation of the seed point in the new image
+  [rows,cols]= im.shape # shape of the given image and new image will be the same 
+  px = im[s_rw, s_cl]
+  # we check whether or not we're at the edge of the matrix and if we have a value in the next col in both matrices. we check if the diff b/w the pixel values is less than the threshold defined by the user
+  if(s_cl+1<cols and im_g[s_rw,s_cl + 1]==0 and diff(px,im[s_rw,s_cl + 1])<= t):
+    grow(im, im_g,t,[s_rw,s_cl +1])     
+  if(s_cl -1 >= 0 and im_g[s_rw,s_cl - 1]==0 and diff(px,im[s_rw,s_cl - 1])<= t):
+    grow(im, im_g,t,[s_rw,s_cl - 1])
+  if(s_rw + 1 < rows and im_g[s_rw+1,s_cl]==0 and diff(px,im[s_rw +1,s_cl])<= t):
+    grow(im, im_g,t,[s_rw+1,s_cl])
+  if(s_rw -1>= 0 and im_g[s_rw -1, s_cl]==0 and diff(px,im[s_rw -1,s_cl])<= t):
+    grow(im, im_g,t,[s_rw - 1, s_cl])
+
+im_object = np.zeros(image.shape)
+t = 5
+s = [5,10]
+grow(image,im_object,t,s)
+
+im_object = 255*im_object
+
+plt.figure(figsize=(9,9))
+plt.subplot(1,3,1)
+plt.imshow(image,cmap='gray')
+plt.title("Original Image")
+plt.subplot(1,3,2)
+plt.imshow(im_object,cmap='gray')
+plt.title("Object on representative image")
+
+im_det = image.copy()
+for r in range(rows):
+  for c in range(cols):
+    if im_object[r,c] == 255:
+      im_det[r,c] = max
+
+plt.figure(figsize=(9,9))
+plt.subplot(1,3,1)
+plt.imshow(image,cmap='gray')
+plt.title("Original Image")
+plt.subplot(1,3,2)
+plt.imshow(im_object,cmap='gray')
+plt.title("Object on representative image")
+plt.subplot(1,3,3)
+plt.imshow(im_det,cmap='gray')
+plt.title("Image with object")
+
+Conclusion:
+* Region growing is used to segment the object from the given image.
+* Initially, the seed point is taken as (1,1) to detect the location of the object.
+* Later, the seed point is changed to (3,0). 
+* The result shows that region growing shows the other object at the new seed location.
+* The above algorithm is applied on the image "lenna_grey" with the seed value at (5,10) and threshold of 5.
+* The result shows the segmented object.
