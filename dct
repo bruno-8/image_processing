@@ -1,0 +1,59 @@
+DCT
+Experiment-5
+
+**Aim:**
+To determine DCT of the image and use it for image compression.
+
+from scipy.linalg import hadamard
+from skimage.color import rgb2gray
+from skimage import io
+import numpy as np
+import matplotlib.pyplot as plt
+import cv2
+from scipy.fftpack import dct
+from scipy.fftpack import idct
+import scipy 
+
+img = io.imread('test.png')
+
+[rows,cols] = img.shape
+[rows,cols]
+
+N =8
+#to determine DCT of the image
+imgdct = np.zeros((rows,cols),dtype = int) #we create a matrix of the same size as our image but we keep all elements as zero 
+
+for r in range(rows//N): #gives us rows in multiples of 8 (// gives us an integer value)
+  for c in range(cols//N): #gives us cols in multiples of 8
+    temp = dct(img[r*N:(r+1)*N, c*N:(c+1)*N]) # formula to obtain the nth row and column; gives us the image in blocks of 8 in sequence 
+    temp[1:N,1:N] =0
+    imgdct[r*N:(r+1)*N, c*N:(c+1)*N]= temp #hadamard transform is obtained 
+
+plt.imshow(imgdct,cmap="gray")
+
+#to determine inverse DCT of the image
+imgidct = np.zeros((rows,cols),dtype = int) #we create a matrix of the same size as our image but we keep all elements as zero 
+
+for r in range(rows//N): #gives us rows in multiples of 8 (// gives us an integer value)
+  for c in range(cols//N): #gives us cols in multiples of 8
+    temp = idct(imgdct[r*N:(r+1)*N, c*N:(c+1)*N]) # formula to obtain the nth row and column; gives us the image in blocks of 8 in sequence 
+    imgidct[r*N:(r+1)*N, c*N:(c+1)*N]= temp #hadamard transform is obtained 
+
+plt.imshow(imgidct,cmap="gray")
+
+plt.figure(figsize=(9,9))
+plt.subplot(1,3,1)
+plt.imshow(img,cmap="gray")
+plt.title("Original Image")
+plt.subplot(1,3,2)
+plt.imshow(imgdct,cmap="gray")
+plt.title("DCT Transformed Image")
+plt.subplot(1,3,3)
+plt.imshow(imgidct, cmap="gray")
+plt.title("Inverse Transformed Image")
+
+**Conclusion:**
+* For the given image, DCT co-efficients are calculated using DCt matrix of 8x8.
+* If inverse of DCT of the above image is determined, there is no difference between the original image and the inverse transformed image.
+* If last 6 rows and 6 columns are converted to zero, then there is a considerable difference between the original image and inverse transformed image. This shows that the given image can be compressed by reducing fewer co-efficients to zero.
+* DCT is efficient when low-frequency components are available and inefficient when high frequency components are available.
