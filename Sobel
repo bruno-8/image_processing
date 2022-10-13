@@ -1,0 +1,94 @@
+**Aim:**
+Use Sobel operator to detect edges in the given image. 
+
+from scipy.linalg import hadamard
+from skimage.color import rgb2gray
+from skimage import io
+import numpy as np
+import matplotlib.pyplot as plt
+import cv2
+from scipy.fftpack import dct
+from scipy.fftpack import idct
+import scipy 
+from scipy import signal
+
+image = io.imread('roof.tif')
+
+[rows,cols]=image.shape
+[rows,cols]
+
+# Sobel filter helps in detecting edges 
+horz_filter = [[-1,-2,-1],[0,0,0],[1,2,1]] #we apply this horizontal filter on the given image
+image_h = signal.convolve2d(image,horz_filter,mode = 'same') #to retain the size of the image we use mode ='same'!!!!
+
+plt.imshow(image_h,cmap='gray')
+
+
+for r in range(rows):
+  for c in range(cols):
+    if image_h[r][c]<0:
+      image_h[r][c]=0
+
+plt.imshow(image_h,cmap='gray')
+
+#vertical filter 
+vert_filter = [[-1,0,1],[-2,0,2],[-1,0,1]]
+image_v = signal.convolve2d(image,vert_filter, mode = 'same')
+
+plt.imshow(image_v, cmap = 'gray')
+
+for r in range(rows):
+  for c in range(cols):
+    if image_v[r][c]<0:
+      image_v[r][c] = 0
+
+plt.imshow(image_v, cmap ="gray")
+
+#forward diagonal
+fd_filter = [[0,1,2],[-1,0,1],[-2,-1,0]]
+image_fd = signal.convolve2d(image,fd_filter, mode = 'same')
+plt.imshow(image_fd, cmap='gray')
+
+for r in range(rows):
+  for c in range(cols):
+    if image_fd[r][c]<0:
+      image_fd[r][c] = 0
+plt.imshow(image_fd, cmap ='gray')
+
+#reverse diagonal
+rd_filter = [[2,1,0],[1,0,-1],[0,-1,-2]]
+image_rd = signal.convolve2d(image,rd_filter, mode = 'same')
+plt.imshow(image_rd, cmap='gray')
+
+for r in range(rows):
+  for c in range(cols):
+    if image_rd[r][c]<0:
+      image_rd[r][c] = 0
+plt.imshow(image_rd, cmap ='gray')
+
+image_all = image_h + image_v + image_rd + image_fd
+
+for r in range(rows):
+  for c in range(cols):
+    if image_all[r][c]> 200:
+      image_all[r][c] = 255
+plt.imshow(image_all, cmap = 'gray')
+
+# Laplacian Operator
+lap_filter = [[1,1,1],[1,-8,1],[1,1,1]]
+image_laplacian = signal.convolve2d(image,lap_filter, mode = 'same')
+plt.imshow(image_laplacian, cmap= 'gray')
+
+for r in range(rows):
+  for c in range(cols):
+    if image_laplacian[r][c]< 0:
+      image_laplacian[r][c] = 0
+plt.imshow(image_laplacian, cmap = 'gray')
+
+image_edges = image - image_laplacian
+plt.imshow(image_edges, cmap='gray')
+
+**Conclusion:**
+* Sobel filters are applied to highlight horizontal, vertical and diagonal edges of the given image. To improve the contrast of the filtered image, all the negative values are converted to zero.
+* To detect all the edges by using one filter, Laplacian filter is used to filter the given image. The filtered image is too bright. 
+* Power Law Transformation can be used to improve the contrast of this image. Gamma should be greater than 1. 
